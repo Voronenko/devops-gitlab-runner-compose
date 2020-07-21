@@ -5,8 +5,16 @@ Simple docker-compose file which turns dockerized host into gitlab runner.
 
 ## Register
 
-```
+Catch all runner
+
+```sh
 register_runner.sh RUNNER_NAME REGISTER_TOKEN CI_SERVER_URL"
+```
+
+Dedicated runner that picks only tagged jobs
+
+```sh
+register_tagged_runner.sh RUNNER_NAME REGISTER_TOKEN "TAG1,TAG2" CI_SERVER_URL
 ```
 
 If CI_SERVER_URL is left empty, https://gitlab.com/ci is assumed.
