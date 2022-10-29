@@ -11,7 +11,7 @@ CONFIG_PATH=config/config.toml
 
 if [[ -z "$2" ]]
 then
-    echo "Usage: register_runner.sh RUNNER_NAME REGISTER_TOKEN CI_SERVER_URL"
+    echo "Usage: register_runner.sh RUNNER_NAME REGISTER_TOKEN \"TAG1,TAG2\" CI_SERVER_URL"
     echo "If CI_SERVER_URL is left empty, https://gitlab.com/ci is assumed"
     exit 1
 fi
@@ -44,10 +44,9 @@ docker-compose exec -T runner \
     --cache-dir /cache \
     --builds-dir /builds \
     --executor docker \
-    --docker-host tcp://host.docker:2375 \
-    --docker-image alpine:3.8 \
+    --docker-host tcp://docker:2375 \
+    --docker-image docker:20.10.16 \
     --docker-privileged \
-    --docker-volumes /var/run/docker.sock:/var/run/docker.sock \
     --docker-volumes /cache:/cache \
     --docker-volumes /builds:/builds \
     --tag-list "${RUNNER_TAGS}" \

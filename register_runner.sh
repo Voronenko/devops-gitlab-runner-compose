@@ -43,9 +43,8 @@ docker-compose exec -T runner \
     --cache-dir /cache \
     --builds-dir /builds \
     --executor docker \
-    --docker-host tcp://host.docker:2375 \
-    --docker-image alpine:3.8 \
+    --docker-host tcp://docker:2375 \
+    --docker-image docker:20.10.16 \
     --docker-privileged \
-    --docker-volumes /var/run/docker.sock:/var/run/docker.sock \
     --docker-volumes /cache:/cache \
     --docker-volumes /builds:/builds

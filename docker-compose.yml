@@ -1,23 +1,24 @@
-version: '3.6'
+version: '3.7'
 
 services:
   docker:
-    image: docker:18.03.1-ce-dind
-    restart: unless-stopped
+    image: docker:20.10.16-dind
     privileged: true
-    command: ["--storage-driver=overlay2"]
+    environment:
+      DOCKER_TLS_CERTDIR: ""
+      DOCKER_DRIVER: overlay
+#    command: ["--storage-driver=overlay2"]
     volumes:
       - docker_lib:/var/lib/docker
       - cache:/cache
       - builds:/builds
     networks:
       gitlab-runner:
-        aliases:
-          - host.docker
 
   runner:
-    image: gitlab/gitlab-runner:alpine-v15.2.1
-    restart: unless-stopped
+    image: gitlab/gitlab-runner:alpine3.15-v15.5.0
+    environment:
+      - DOCKER_HOST=tcp://docker:2375
     volumes:
       - ./config:/etc/gitlab-runner
     networks:

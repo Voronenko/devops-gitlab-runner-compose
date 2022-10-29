@@ -450,3 +450,28 @@ REPOSITORY                                                        TAG       DIGE
 gitlab/gitlab-ee                                                  latest    sha256:723aa6edd8f122d50cae490b1743a616d54d4a910db892314d68470cc39dfb24   (...)
 gitlab/gitlab-runner                                              latest    sha256:4a18a80f5be5df44cb7575f6b89d1fdda343297c6fd666c015c0e778b276e726   (...)
 ```
+
+
+### Success scenario
+
+```
+concurrent = 3
+check_interval = 0
+
+[[runners]]
+  name = "gitlabrunner01"
+  url = "https://gitlab.com/ci"
+  token = "BLABLA"
+  executor = "docker"
+  builds_dir = "/builds"
+  cache_dir = "/cache"
+  environment = ["DOCKER_HOST=tcp://docker:2375/", "DOCKER_TLS_CERTDIR: \"\""]
+  [runners.docker]
+    tls_verify = false
+    image = "docker:20.10.16"
+    privileged = true
+    disable_cache = false
+    volumes = ["/cache:/cache", "/builds:/builds"]
+    shm_size = 0
+  [runners.cache]
+```
