@@ -475,3 +475,53 @@ check_interval = 0
     shm_size = 0
   [runners.cache]
 ```
+
+
+## Self-registration of the runner
+
+If or some reason you can't use provided registration scripts on a target system, you can use following block in your compose file.
+At the moment of implementation, gitlab is unable to parse multiple docker volumes mappings via `DOCKER_VOLUMES` environment variables,
+thus we are doing a fallback to command arguments
+
+```
+  register-runner:
+    restart: 'no'
+    image: gitlab/gitlab-runner:alpine3.15-v15.5.0
+    depends_on:
+      - docker
+    environment:
+# --url=...
+      - CI_SERVER_URL=https://gitlab.com/ci
+# --registration-token ..
+      - REGISTRATION_TOKEN=GRSPECIFYTOKEN
+# --name ..
+      - RUNNER_NAME=SPECIFY_RUNNER_NAME
+      - RUNNER_TAGS=SPECIFY_TAGS
+# --run-untagged=false
+      - REGISTER_RUN_UNTAGGED=false
+# --locked false
+      - REGISTER_LOCKED=false
+# --non-interactive
+      - REGISTER_NON_INTERACTIVE=true
+# --executor docker
+      - RUNNER_EXECUTOR=docker
+# --docker-image=docker:20-dind
+      - DOCKER_IMAGE=docker:20-dind
+# --docker-volumes /var/run/docker.sock:/var/run/docker.sock
+#      - DOCKER_VOLUMES="/var/run/docker.sock:/var/run/docker.sock"
+# --cache-dir /cache
+      - RUNNER_CACHE_DIR=/cache
+# --builds-dir /builds
+      - RUNNER_BUILDS_DIR=/builds
+# --docker-host tcp://host.docker:2375
+      - DOCKER_HOST="tcp://host.docker:2375"
+# --docker-privileged
+      - DOCKER_PRIVILEGED=true
+    command: [ "register", "--docker-volumes", "/cache:/cache", "--docker-volumes", "/builds:/builds", "--docker-volumes", "/var/run/docker.sock:/var/run/docker.sock" ]
+#      - "register"
+#      - "--docker-volumes /cache:/cache"
+#      - "--docker-volumes /builds:/builds"
+#      - "---docker-volumes /var/run/docker.sock:/var/run/docker.sock"
+    volumes:
+      - ./config:/etc/gitlab-runner:z
+```
